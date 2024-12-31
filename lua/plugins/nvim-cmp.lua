@@ -1,12 +1,12 @@
 return {
-	"hrsh7th/nvim-cmp", -- Completion plugin
+	"hrsh7th/nvim-cmp",
 	dependencies = {
-		"hrsh7th/cmp-buffer", -- Buffer completion
-		"hrsh7th/cmp-path", -- Path completion
-		"hrsh7th/cmp-cmdline", -- Command-line completion
+		"hrsh7th/cmp-buffer",
+		"hrsh7th/cmp-path",
+		"hrsh7th/cmp-cmdline",
 		"hrsh7th/cmp-nvim-lsp",
 		"L3MON4D3/LuaSnip",
-		"saadparwaiz1/cmp_luasnip", -- Snippet completions (optional)
+		"saadparwaiz1/cmp_luasnip",
 	},
 	config = function()
 		local has_words_before = function()
@@ -21,11 +21,12 @@ return {
 		cmp.setup({
 			snippet = {
 				expand = function(args)
-					luasnip.lsp_expand(args.body) -- Expanding LuaSnip snippets
+					luasnip.lsp_expand(args.body)
 				end,
 			},
 			completion = {
-				autocomplete = false, -- Disable auto-completion
+				autocomplete = { cmp.TriggerEvent.TextChanged, cmp.TriggerEvent.InsertEnter },
+				keyword_length = 2,
 			},
 			mapping = cmp.mapping.preset.insert({
 				["<Tab>"] = cmp.mapping(function(fallback)
@@ -56,6 +57,8 @@ return {
 			sources = {
 				{ name = "nvim_lsp" }, -- LSP completion source
 				{ name = "luasnip" }, -- LuaSnip completion source
+				{ name = "buffer" },
+				{ name = "path" },
 			},
 		})
 	end,

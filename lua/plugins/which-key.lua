@@ -14,5 +14,10 @@ return {
 			end,
 			desc = "Buffer Local Keymaps (which-key)",
 		},
+		{
+			"<Space>w",
+			":w<CR>",
+			desc = "Save file",
+		},
 	},
 }
