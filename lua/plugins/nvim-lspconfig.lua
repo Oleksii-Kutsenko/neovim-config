@@ -9,9 +9,7 @@ return {
 	config = function()
 		require("mason").setup()
 		local mason_lspconfig = require("mason-lspconfig")
-		mason_lspconfig.setup({
-			ensure_installed = { "pyright", "pylint", "mypy" },
-		})
+		mason_lspconfig.setup({})
 
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 		capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
@@ -19,29 +17,22 @@ return {
 		local pyright_config = require("lsp.pyright")
 		pyright_config.setup()
 
-		require("lspconfig").pyright.setup({
-			capabilities = capabilities,
+		require("lspconfig").eslint.setup({
+			settings = {
+				packageManager = "yarn",
+			},
+			on_attach = function(client, bufnr)
+				vim.api.nvim_create_autocmd("BufWritePre", {
+					buffer = bufnr,
+					command = "EslintFixAll",
+				})
+			end,
 		})
 
 		local lint = require("lint")
-
 		lint.linters.pylint.cmd = { "pylint", "--output-format", "json", "--reports", "no" }
 		lint.linters.mypy.cmd = { "mypy" }
 
 		vim.cmd([[autocmd BufWritePost *.py lua require('lint').try_lint()]])
 	end,
-	opts = {
-		servers = {
-			pyright = {
-				settings = {
-					pyright = {
-						analysis = {
-							typeCheckingMode = "off",
-							diagnosticMode = "off",
-						},
-					},
-				},
-			},
-		},
-	},
 }

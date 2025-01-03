@@ -11,6 +11,9 @@ return {
 	opts = {
 		ensure_installed = {
 			"pyright",
+			"pylint",
+			"mypy",
+			"eslint",
 		},
 	},
 }

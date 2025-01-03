@@ -44,6 +44,16 @@ local function set_python_path(path)
 end
 
 local function setup_pyright()
+	local capabilities = vim.lsp.protocol.make_client_capabilities()
+	capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+
+	capabilities.textDocument = capabilities.textDocument or {}
+	capabilities.textDocument.publishDiagnostics = capabilities.textDocument.publishDiagnostics or {}
+	capabilities.textDocument.publishDiagnostics.tagSupport = {
+		valueSet = { 2 },
+	}
+
+	-- Configure pyright server with settings
 	require("lspconfig").pyright.setup({
 		cmd = { "pyright-langserver", "--stdio" },
 		filetypes = { "python" },
@@ -56,10 +66,13 @@ local function setup_pyright()
 				analysis = {
 					autoSearchPaths = true,
 					useLibraryCodeForTypes = true,
-					diagnosticMode = "openFilesOnly",
+					diagnosticMode = "off",
+					typeCheckingMode = "off",
 				},
 			},
 		},
+		-- Add the extended capabilities here
+		capabilities = capabilities,
 	})
 end
 

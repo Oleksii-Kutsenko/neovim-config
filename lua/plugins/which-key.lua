@@ -19,5 +19,29 @@ return {
 			":w<CR>",
 			desc = "Save file",
 		},
+		{
+			"J",
+			":m .+1<CR>==",
+			mode = "n",
+			desc = "Move line down",
+		},
+		{
+			"K",
+			":m .-2<CR>==",
+			mode = "n",
+			desc = "Move line up",
+		},
+		{
+			"J",
+			":m .+1<CR>==gi",
+			mode = "i",
+			desc = "Move line down (insert mode)",
+		},
+		{
+			"K",
+			":m .-2<CR>==gi",
+			mode = "i",
+			desc = "Move line up (insert mode)",
+		},
 	},
 }
