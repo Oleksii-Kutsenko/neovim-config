@@ -43,5 +43,12 @@ return {
 			mode = "i",
 			desc = "Move line up (insert mode)",
 		},
+		{
+			"<space>ca",
+			function()
+				vim.lsp.buf.code_action()
+			end,
+			desc = "LSP Code Action",
+		},
 	},
 }

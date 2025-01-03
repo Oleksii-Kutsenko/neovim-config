@@ -9,13 +9,36 @@ return {
 	config = function()
 		require("mason").setup()
 		local mason_lspconfig = require("mason-lspconfig")
-		mason_lspconfig.setup({})
+		mason_lspconfig.setup({
+			ensure_installed = { "pylsp" },
+		})
 
 		local capabilities = vim.lsp.protocol.make_client_capabilities()
 		capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-		local pyright_config = require("lsp.pyright")
-		pyright_config.setup()
+		require("lspconfig").pylsp.setup({
+			capabilities = capabilities,
+			settings = {
+				pylsp = {
+					plugins = {
+						-- formatters
+						black = { enabled = true },
+						-- linters
+						pylint = { enabled = true },
+						pycodestyle = { enabled = true },
+						-- type checker
+						pylsp_mypy = { enabled = true },
+						-- auto-completion options
+						jedi_completion = { fuzzy = true },
+						-- import sorting
+						pyls_isort = { enabled = true },
+					},
+				},
+			},
+			flags = {
+				debounce_text_changes = 200,
+			},
+		})
 
 		require("lspconfig").eslint.setup({
 			settings = {
@@ -28,11 +51,5 @@ return {
 				})
 			end,
 		})
-
-		local lint = require("lint")
-		lint.linters.pylint.cmd = { "pylint", "--output-format", "json", "--reports", "no" }
-		lint.linters.mypy.cmd = { "mypy" }
-
-		vim.cmd([[autocmd BufWritePost *.py lua require('lint').try_lint()]])
 	end,
 }
