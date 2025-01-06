@@ -66,6 +66,19 @@ return {
 			shfmt = {
 				prepend_args = { "-i", "2" },
 			},
+			isort = {
+				command = "isort",
+				args = {
+					"--le lf",
+					"-",
+				},
+			},
+			black = {
+				command = "black",
+				args = {
+					"-",
+				},
+			},
 		},
 	},
 	init = function()

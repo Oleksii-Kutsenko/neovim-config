@@ -1,5 +1,6 @@
 return {
 	"hrsh7th/nvim-cmp",
+	event = "InsertEnter",
 	dependencies = {
 		"hrsh7th/cmp-buffer",
 		"hrsh7th/cmp-path",
@@ -9,14 +10,10 @@ return {
 		"saadparwaiz1/cmp_luasnip",
 	},
 	config = function()
-		local has_words_before = function()
-			unpack = unpack or table.unpack
-			local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-			return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-		end
-
 		local cmp = require("cmp")
 		local luasnip = require("luasnip")
+		require("luasnip.loaders.from_vscode").lazy_load()
+		luasnip.config.setup({})
 
 		cmp.setup({
 			snippet = {
@@ -25,40 +22,49 @@ return {
 				end,
 			},
 			completion = {
-				autocomplete = { cmp.TriggerEvent.TextChanged, cmp.TriggerEvent.InsertEnter },
-				keyword_length = 2,
+				completeopt = "menu,menuone,noinsert",
 			},
 			mapping = cmp.mapping.preset.insert({
+				["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
+				["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
+				["<C-b>"] = cmp.mapping.scroll_docs(-4), -- scroll backward
+				["<C-f>"] = cmp.mapping.scroll_docs(4), -- scroll forward
+				["<C-Space>"] = cmp.mapping.complete({}), -- show completion suggestions
+				["<CR>"] = cmp.mapping.confirm({
+					behavior = cmp.ConfirmBehavior.Replace,
+					select = true,
+				}),
+				-- Tab through suggestions or when a snippet is active, tab to the next argument
 				["<Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
-						cmp.select_next_item() -- Select next item in completion
-					elseif luasnip.expand_or_jumpable() then
-						luasnip.expand_or_jump() -- Expand snippet or jump
-					elseif has_words_before() then
-						cmp.complete() -- Trigger completion
+						cmp.select_next_item()
+					elseif luasnip.expand_or_locally_jumpable() then
+						luasnip.expand_or_jump()
 					else
-						fallback() -- Fall back to default behavior
+						fallback()
 					end
 				end, { "i", "s" }),
-
-				["<s-Tab>"] = cmp.mapping(function(fallback)
+				-- Tab backwards through suggestions or when a snippet is active, tab to the next argument
+				["<S-Tab>"] = cmp.mapping(function(fallback)
 					if cmp.visible() then
-						cmp.select_prev_item() -- Select previous item in completion
-					elseif luasnip.jumpable(-1) then
-						luasnip.jump(-1) -- Jump back in snippet
+						cmp.select_prev_item()
+					elseif luasnip.locally_jumpable(-1) then
+						luasnip.jump(-1)
 					else
-						fallback() -- Fall back to default behavior
+						fallback()
 					end
 				end, { "i", "s" }),
-
-				["<c-e>"] = cmp.mapping.abort(), -- Abort completion
-				["<CR>"] = cmp.mapping.confirm({ select = true }), -- Confirm selected completion item
 			}),
-			sources = {
-				{ name = "nvim_lsp" }, -- LSP completion source
-				{ name = "luasnip" }, -- LuaSnip completion source
-				{ name = "buffer" },
-				{ name = "path" },
+			sources = cmp.config.sources({
+				{ name = "nvim_lsp" }, -- lsp
+				{ name = "luasnip" }, -- snippets
+				{ name = "buffer" }, -- text within current buffer
+				{ name = "path" }, -- file system paths
+			}),
+			window = {
+				-- Add borders to completions popups
+				completion = cmp.config.window.bordered(),
+				documentation = cmp.config.window.bordered(),
 			},
 		})
 	end,

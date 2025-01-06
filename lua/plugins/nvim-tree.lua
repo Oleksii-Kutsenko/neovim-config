@@ -13,7 +13,10 @@ return {
 
 		local wk = require("which-key")
 		wk.add({
-			{ "<leader>e", "<cmd>NvimTreeFocus<cr>", desc = "Explorer" },
+			{ "<leader>e", group = "Explorer" },
+			{ "<leader>ee", ":NvimTreeToggle<CR>", desc = "Toggle file explorer" },
+			{ "<leader>er", "<cmd>NvimTreeFocus<cr>", desc = "Toggle focus to file explorer" },
+			{ "<leader>ef", ":NvimTreeFindFile<CR>", desc = "Find file in file explorer" },
 		})
 	end,
 }
