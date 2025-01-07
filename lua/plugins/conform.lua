@@ -8,7 +8,7 @@ return {
 			function()
 				require("conform").format({ async = true })
 			end,
-			mode = "",
+			mode = "n",
 			desc = "Format buffer",
 		},
 	},
@@ -31,7 +31,7 @@ return {
 				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 					return
 				end
-				return { timeout_ms = 1000, lsp_format = "fallback" }
+				return { timeout_ms = 1100, lsp_format = "fallback" }
 			end,
 			formatters = {
 				prettierd = {
@@ -53,15 +53,9 @@ return {
 	---@module "conform"
 	---@type conform.setupOpts
 	opts = {
-		formatters_by_ft = {
-			lua = { "stylua" },
-			python = { "isort", "black" },
-			javascript = { "prettierd", "prettier", stop_after_first = true },
-		},
 		default_format_opts = {
 			lsp_format = "fallback",
 		},
-		format_on_save = { timeout_ms = 1000 },
 		formatters = {
 			shfmt = {
 				prepend_args = { "-i", "2" },
