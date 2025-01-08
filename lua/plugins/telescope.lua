@@ -77,6 +77,10 @@ return {
 				end,
 				desc = "Grep file contents in current NvimTree node",
 			},
+      {
+        "<leader>zr",
+        
+      }
 		})
 	end,
 }

@@ -33,6 +33,71 @@ return {
 			mode = "n",
 			desc = "Save and quit",
 		},
+		{
+			"<leader>yp",
+			function()
+				local filepath = vim.fn.expand("%:p")
+				vim.fn.setreg("+", filepath)
+				print("Yanked file path: " .. filepath)
+			end,
+			desc = "Yank file path",
+		},
+		{
+			"zf#j",
+			desc = "Create fold from cursor down # lines",
+		},
+		{
+			"zf/string",
+			desc = "Create fold from cursor to string",
+		},
+		{
+			"zj",
+			desc = "Move to the next fold",
+		},
+		{
+			"zk",
+			desc = "Move to the previous fold",
+		},
+		{
+			"zo",
+			desc = "Open fold at cursor",
+		},
+		{
+			"zO",
+			desc = "Open all folds at cursor",
+		},
+		{
+			"zm",
+			desc = "Increase foldlevel by one",
+		},
+		{
+			"zM",
+			desc = "Close all open folds",
+		},
+		{
+			"zr",
+			desc = "Decrease foldlevel by one",
+		},
+		{
+			"zR",
+			desc = "Decrease foldlevel to zero (open all folds)",
+		},
+		{
+			"zd",
+			desc = "Delete fold at cursor",
+		},
+		{
+			"zE",
+			desc = "Delete all folds",
+		},
+		{
+			"[z",
+			desc = "Move to start of open fold",
+		},
+		{
+			"]z",
+			desc = "Move to end of open fold",
+		},
 
 		-- Splits
 		{
@@ -98,6 +163,7 @@ return {
 		},
 
 		-- Tab management keymaps
+		{ "<leader>t", group = "Tab page" },
 		{
 			"<leader>to",
 			":tabnew<CR>",
@@ -121,6 +187,12 @@ return {
 			":tabp<CR>",
 			mode = "n",
 			desc = "Go to the previous tab",
+		},
+		{
+			"<leader>tt",
+			":tab split<CR>",
+			mode = "n",
+			desc = "Open current buffer in a new tab page",
 		},
 	},
 }
