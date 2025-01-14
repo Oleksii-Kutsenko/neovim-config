@@ -107,7 +107,7 @@ return {
 			desc = "Split window vertically",
 		},
 		{
-			"<leader>sh",
+			"<leader>sb",
 			"<C-w>s",
 			mode = "n",
 			desc = "Split window horizontally",
