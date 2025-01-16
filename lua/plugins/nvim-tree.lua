@@ -17,6 +17,13 @@ return {
 			{ "<leader>ee", ":NvimTreeToggle<CR>", desc = "Toggle file explorer" },
 			{ "<leader>er", "<cmd>NvimTreeFocus<cr>", desc = "Toggle focus to file explorer" },
 			{ "<leader>ef", ":NvimTreeFindFile<CR>", desc = "Find file in file explorer" },
+			{
+				"<C-s>",
+				function()
+					local api = require("nvim-tree.api")
+					api.node.open.vertical()
+				end,
+			},
 		})
 	end,
 }
