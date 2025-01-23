@@ -16,7 +16,16 @@ return {
 		require("conform").setup({
 			formatters_by_ft = {
 				lua = { "stylua" },
-				python = { "isort", "black" },
+				python = function(bufnr)
+					local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+
+					local project_formatters = {
+						["dilema"] = { "isort", "black" },
+						["ai-service"] = { "ruff_format" },
+					}
+
+					return project_formatters[project_name] or { "isort", "black" }
+				end,
 				rust = { "rustfmt", lsp_format = "fallback" },
 				html = { "prettierd" },
 				javascript = { "prettierd" },
