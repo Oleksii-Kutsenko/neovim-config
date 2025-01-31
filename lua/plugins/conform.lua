@@ -21,7 +21,7 @@ return {
 
 					local project_formatters = {
 						["dilema"] = { "isort", "black" },
-						["ai-service"] = { "ruff_format" },
+						["ai-service"] = { "ruff_format", "ruff_organize_imports" },
 					}
 
 					return project_formatters[project_name] or { "isort", "black" }
@@ -40,8 +40,14 @@ return {
 				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 					return
 				end
-				return { timeout_ms = 1200, lsp_format = "fallback" }
+				return { timeout_ms = 500, lsp_format = "fallback" }
 			end,
+			format_after_save = {
+				lsp_format = "fallback",
+			},
+			log_level = vim.log.levels.ERROR,
+			notify_on_error = true,
+			notify_no_formatters = true,
 			formatters = {
 				prettierd = {
 					stop_after_first = true,

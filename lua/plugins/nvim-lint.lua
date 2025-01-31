@@ -17,7 +17,13 @@ return {
 			-- Only run linter for the following extensions. Remove this to always run.
 			pattern = { "*.py" },
 			callback = function()
-				require("lint").try_lint()
+				local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+
+				if project_name == "ai-service" then
+					require("lint").try_lint("ruff")
+				else
+					require("lint").try_lint()
+				end
 			end,
 		})
 	end,
