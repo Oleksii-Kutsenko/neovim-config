@@ -15,6 +15,7 @@ return {
 	config = function()
 		require("conform").setup({
 			formatters_by_ft = {
+				htmldjango = { "djlint" },
 				lua = { "stylua" },
 				python = function(bufnr)
 					local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
@@ -40,7 +41,7 @@ return {
 				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 					return
 				end
-				return { timeout_ms = 500, lsp_format = "fallback" }
+				return { timeout_ms = 3000, lsp_format = "fallback" }
 			end,
 			format_after_save = {
 				lsp_format = "fallback",
@@ -86,6 +87,14 @@ return {
 				command = "black",
 				args = {
 					"-",
+				},
+			},
+			djlint = {
+				command = "djlint",
+				args = {
+					"--reformat",
+					"--format-css",
+					"--format-js",
 				},
 			},
 		},

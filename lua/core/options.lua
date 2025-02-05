@@ -16,12 +16,24 @@ opt.smartcase = true
 
 opt.foldmethod = "expr"
 opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-
 opt.foldcolumn = "0"
-
 opt.foldtext = ""
-
 opt.foldlevel = 99
 opt.foldlevelstart = 3
-
 opt.foldnestmax = 4
+
+vim.filetype.add({
+	extension = {
+		html = "htmldjango",
+	},
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "htmldjango",
+	callback = function()
+		vim.opt.shiftwidth = 4
+		vim.opt.tabstop = 4
+		vim.opt.smartindent = false
+		vim.opt.autoindent = false
+	end,
+})

@@ -4,24 +4,23 @@ return {
 	dependencies = {
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
-		-- Auto-Install LSPs, linters, formatters, debuggers
-		-- https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim
-		{ "WhoIsSethDaniel/mason-tool-installer.nvim" },
-
+		{ "WhoIsSethDaniel/mason-tool-installer.nvim" }, -- Auto-installer for linters/formatters
 		"hrsh7th/cmp-nvim-lsp",
-		{ "j-hui/fidget.nvim", opts = {} },
+		{ "j-hui/fidget.nvim", opts = {} }, -- LSP progress indicator
 	},
 	config = function()
 		require("mason").setup()
+
 		local mason_lspconfig = require("mason-lspconfig")
 		mason_lspconfig.setup({
 			ensure_installed = {
 				pyright,
+				eslint,
+				djlsp,
 			},
 		})
 
 		require("mason-tool-installer").setup({
-			-- Install these linters, formatters, debuggers automatically
 			ensure_installed = {
 				"black",
 				"isort",
@@ -32,9 +31,8 @@ return {
 
 		local lspconfig = require("lspconfig")
 		local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
-		local lsp_attach = function(client, bufnr)
-			-- Create your keybindings here...
-		end
+
+		local lsp_attach = function(client, bufnr) end
 
 		-- Call setup on each LSP server
 		require("mason-lspconfig").setup_handlers({
@@ -61,6 +59,14 @@ return {
 			end,
 		})
 
+		require("lspconfig").djlsp.setup({
+			cmd = { "djlsp" },
+			filetypes = { "html", "htmldjango" },
+			init_options = {
+				djlsp = {},
+			},
+		})
+
 		local wk = require("which-key")
 
 		wk.add({
@@ -83,8 +89,10 @@ return {
 			{ "<leader>gp", "<cmd>lua vim.diagnostic.goto_prev()<CR>", desc = "Go to previous diagnostic" },
 			{ "<leader>gn", "<cmd>lua vim.diagnostic.goto_next()<CR>", desc = "Go to next diagnostic" },
 			{ "<leader>tr", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", desc = "List document symbols" },
+
 			{ "<leader>r", group = "Refactor" },
 			{ "<leader>rr", "<cmd>lua vim.lsp.buf.rename()<CR>", desc = "Rename symbol" },
+
 			{ "<C-Space>", "<cmd>lua vim.lsp.buf.completion()<CR>", desc = "Trigger completion", mode = "i" },
 		})
 	end,
