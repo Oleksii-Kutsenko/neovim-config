@@ -79,7 +79,7 @@ return {
 			isort = {
 				command = "isort",
 				args = {
-					"--le lf",
+					"--le LF",
 					"-",
 				},
 			},
