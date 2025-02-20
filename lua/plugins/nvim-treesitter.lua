@@ -17,6 +17,8 @@ return {
 			"html",
 			"python",
 			"typescript",
+			"vue",
+			"css",
 		},
 		sync_install = false,
 		highlight = { enable = true },

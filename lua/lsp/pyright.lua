@@ -43,7 +43,7 @@ local function set_python_path(path)
 	end
 end
 
-local function setup_pyright()
+local function setup_pyright(opts)
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
@@ -53,8 +53,7 @@ local function setup_pyright()
 		valueSet = { 2 },
 	}
 
-	-- Configure pyright server with settings
-	require("lspconfig").pyright.setup({
+	local pyright_opts = { -- Pyright-specific options
 		cmd = { "pyright-langserver", "--stdio" },
 		filetypes = { "python" },
 		root_dir = function(fname)
@@ -71,9 +70,12 @@ local function setup_pyright()
 				},
 			},
 		},
-		-- Add the extended capabilities here
-		capabilities = capabilities,
-	})
+		capabilities = capabilities, -- Add capabilities here
+	}
+
+	pyright_opts = vim.tbl_deep_extend("force", pyright_opts, opts or {})
+
+	require("lspconfig").pyright.setup(pyright_opts)
 end
 
 return {

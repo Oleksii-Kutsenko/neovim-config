@@ -13,7 +13,6 @@ return {
 			"pyright",
 			"pylint",
 			"mypy",
-			"eslint",
 		},
 	},
 }

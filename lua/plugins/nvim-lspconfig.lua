@@ -9,61 +9,67 @@ return {
 		{ "j-hui/fidget.nvim", opts = {} }, -- LSP progress indicator
 	},
 	config = function()
+		local util = require("lspconfig.util")
 		require("mason").setup()
+
+		local lsp_attach = function(client, bufnr)
+			print("Client attached:", client.name, "Buffer:", bufnr)
+		end
+
+		local servers = {
+			volar = {
+				filetypes = { "vue", "typescript", "javascript", "html" },
+				on_attach = lsp_attach,
+				init_options = {
+					vue = {
+						hybridMode = false,
+					},
+				},
+			},
+			djlsp = {
+				cmd = { "djlsp" },
+				filetypes = { "html", "htmldjango" },
+				init_options = {
+					djlsp = {},
+				},
+				on_attach = lsp_attach,
+			},
+			pyright = require("lsp.pyright"),
+			eslint = {
+				settings = {
+					packageManager = "yarn",
+				},
+				on_attach = function(client, bufnr)
+					vim.api.nvim_create_autocmd("BufWritePre", {
+						buffer = bufnr,
+						command = "EslintFixAll",
+					})
+				end,
+			},
+		}
+
+		require("mason-tool-installer").setup({
+			ensure_installed = {
+				"volar",
+				"pyright",
+				"eslint",
+			},
+		})
 
 		local mason_lspconfig = require("mason-lspconfig")
 		mason_lspconfig.setup({
 			ensure_installed = {
-				pyright,
-				eslint,
-				djlsp,
+				"volar",
+				"pyright",
+				"eslint",
 			},
-		})
+			handlers = {
+				function(server_name)
+					local opts = servers[server_name] or {}
+					opts.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		require("mason-tool-installer").setup({
-			ensure_installed = {
-				"black",
-				"isort",
-				"mypy",
-				"pylint",
-			},
-		})
-
-		local lspconfig = require("lspconfig")
-		local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-		local lsp_attach = function(client, bufnr) end
-
-		-- Call setup on each LSP server
-		require("mason-lspconfig").setup_handlers({
-			function(server_name)
-				lspconfig[server_name].setup({
-					on_attach = lsp_attach,
-					capabilities = lsp_capabilities,
-				})
-			end,
-		})
-
-		local pyright_config = require("lsp.pyright")
-		pyright_config.setup()
-
-		require("lspconfig").eslint.setup({
-			settings = {
-				packageManager = "yarn",
-			},
-			on_attach = function(client, bufnr)
-				vim.api.nvim_create_autocmd("BufWritePre", {
-					buffer = bufnr,
-					command = "EslintFixAll",
-				})
-			end,
-		})
-
-		require("lspconfig").djlsp.setup({
-			cmd = { "djlsp" },
-			filetypes = { "html", "htmldjango" },
-			init_options = {
-				djlsp = {},
+					require("lspconfig")[server_name].setup(opts)
+				end,
 			},
 		})
 
