@@ -34,6 +34,8 @@ return {
 				markdown = { "prettierd" },
 				typescript = { "prettierd" },
 				typescriptreact = { "prettierd" },
+        vue = {"prettierd"},
+				toml = { "pyproject-fmt" },
 				-- Apply trim_whitespace for all files
 				["*"] = { "trim_whitespace" },
 			},
