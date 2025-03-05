@@ -77,10 +77,20 @@ return {
 				end,
 				desc = "Grep file contents in current NvimTree node",
 			},
-      {
-        "<leader>zr",
-        
-      }
+			{
+				"<leader>zr",
+			},
+		})
+
+		require("telescope").setup({
+			defaults = {
+				layout_strategy = "horizontal",
+				layout_config = {
+					anchor = "N", -- Anchors the Telescope window to the South (bottom)
+					height = 0.6,
+					prompt_position = "top",
+				},
+			},
 		})
 	end,
 }
