@@ -13,14 +13,14 @@ return {
 		-- Add hop keymaps to which-key
 		wk.add({
 			{
-				"<leader>f",
+				"<leader>h",
 				function()
 					hop.hint_char1({ direction = directions.AFTER_CURSOR, current_line_only = false })
 				end,
 				desc = "Hop to character forward",
 			},
 			{
-				"<leader>F",
+				"<leader>H",
 				function()
 					hop.hint_char1({ direction = directions.BEFORE_CURSOR, current_line_only = false })
 				end,

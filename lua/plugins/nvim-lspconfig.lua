@@ -18,7 +18,7 @@ return {
 
 		local servers = {
 			volar = {
-				filetypes = { "vue", "typescript", "javascript", "html" },
+				filetypes = { "vue", "javascript", "html" },
 				on_attach = lsp_attach,
 				init_options = {
 					vue = {
