@@ -56,11 +56,15 @@ return {
 				end, { "i", "s" }),
 			}),
 			sources = cmp.config.sources({
+				{ name = "minuet" },
 				{ name = "nvim_lsp" }, -- lsp
 				{ name = "luasnip" }, -- snippets
 				{ name = "buffer" }, -- text within current buffer
 				{ name = "path" }, -- file system paths
 			}),
+			performance = {
+				fetching_timeout = 1000,
+			},
 			window = {
 				-- Add borders to completions popups
 				completion = cmp.config.window.bordered(),
