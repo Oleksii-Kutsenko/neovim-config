@@ -17,7 +17,7 @@ return {
 		end
 
 		local servers = {
-			volar = {
+			vue_ls = {
 				filetypes = { "vue", "javascript", "html" },
 				on_attach = lsp_attach,
 				init_options = {
@@ -50,7 +50,7 @@ return {
 
 		require("mason-tool-installer").setup({
 			ensure_installed = {
-				"volar",
+				"vue_ls",
 				"pyright",
 				"eslint",
 			},
@@ -59,7 +59,7 @@ return {
 		local mason_lspconfig = require("mason-lspconfig")
 		mason_lspconfig.setup({
 			ensure_installed = {
-				"volar",
+				"vue_ls",
 				"pyright",
 				"eslint",
 			},

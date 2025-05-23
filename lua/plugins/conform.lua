@@ -21,8 +21,6 @@ return {
 			isort = {
 				command = "isort",
 				args = {
-					"--le",
-					"LF",
 					"-",
 				},
 			},
