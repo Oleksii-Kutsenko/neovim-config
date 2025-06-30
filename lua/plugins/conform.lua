@@ -1,10 +1,10 @@
 return {
 	"stevearc/conform.nvim",
 	cmd = { "ConformInfo" },
-  event = "VeryLazy",
+	event = "VeryLazy",
 	keys = {
 		{
-			"<leader>f",
+			"<leader>F",
 			function()
 				require("conform").format({ async = true, lsp_format = "fallback" })
 			end,
@@ -12,99 +12,104 @@ return {
 			desc = "Format buffer",
 		},
 	},
+
 	---@module "conform"
 	---@type conform.setupOpts
-	opts = {
-		formatters = {
-			shfmt = {
-				prepend_args = { "-i", "2" },
-			},
-			isort = {
-				command = "isort",
-				args = {
-					"-",
+	opts = function()
+		local util = require("conform.util")
+
+		return {
+			formatters = {
+				shfmt = {
+					prepend_args = { "-i", "2" },
 				},
-			},
-			black = {
-				command = "black",
-				args = {
-					"-",
+				isort = {
+					command = "isort",
+					args = { "-" },
 				},
-			},
-			djlint = {
-				command = "djlint",
-				args = {
-					"--format-js",
-					"--format-css",
-					"--reformat",
-					"-",
+				black = {
+					command = "black",
+					args = { "-" },
 				},
-			},
-			stylua = {},
-			rustfmt = {},
-			prettierd = {
-				condition = function()
-					local current_dir = vim.fn.expand("%:p:h")
-					local path_spec = current_dir .. ";"
-					local prettier_configs = {
-						".prettierrc",
-						".prettierrc.json",
-						".prettierrc.yaml",
-						".prettierrc.yml",
-						".prettierrc.toml",
-						".prettierrc.js",
-						"prettier.config.js",
-					}
-					for _, config_name in ipairs(prettier_configs) do
-						if vim.fn.findfile(config_name, path_spec) ~= "" then
-							return true
+				djlint = {
+					command = "djlint",
+					args = {
+						"--format-js",
+						"--format-css",
+						"--reformat",
+						"-",
+					},
+				},
+				stylua = {},
+				rustfmt = {},
+				prettierd = {
+					condition = function()
+						local current_dir = vim.fn.expand("%:p:h")
+						local path_spec = current_dir .. ";"
+						local prettier_configs = {
+							".prettierrc",
+							".prettierrc.json",
+							".prettierrc.yaml",
+							".prettierrc.yml",
+							".prettierrc.toml",
+							".prettierrc.js",
+							"prettier.config.js",
+						}
+						for _, config_name in ipairs(prettier_configs) do
+							if vim.fn.findfile(config_name, path_spec) ~= "" then
+								return true
+							end
 						end
-					end
-					return false
+						return false
+					end,
+				},
+				pyproject_fmt = {
+					command = "pyproject-fmt",
+					args = { "-" },
+					cwd = util.root_file({ "pyproject.toml" }),
+					exit_codes = { 0, 1 },
+				},
+				trim_whitespace = {},
+				ruff_format = {},
+				ruff_organize_imports = {},
+			},
+
+			formatters_by_ft = {
+				htmldjango = { "djlint" },
+				lua = { "stylua" },
+				python = function()
+					local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+					local project_formatters = {
+						["dilema"] = { "isort", "black" },
+						["ai-service"] = { "ruff_format", "ruff_organize_imports" },
+					}
+					return project_formatters[project_name] or { "isort", "black" }
 				end,
+				rust = { "rustfmt", lsp_format = "fallback" },
+				html = { "prettierd" },
+				javascript = { "prettierd" },
+				javascriptreact = { "prettierd" },
+				markdown = { "prettierd" },
+				typescript = { "prettierd" },
+				typescriptreact = { "prettierd" },
+				vue = { "prettierd" },
+				toml = { "pyproject_fmt" },
+				["*"] = { "trim_whitespace" },
 			},
-			pyproject_fmt = {
-				command = "pyproject-fmt",
-			},
-			trim_whitespace = {},
-			ruff_format = {},
-			ruff_organize_imports = {},
-		},
 
-		formatters_by_ft = {
-			htmldjango = { "djlint" },
-			lua = { "stylua" },
-			python = function(bufnr)
-				local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-				local project_formatters = {
-					["dilema"] = { "isort", "black" },
-					["ai-service"] = { "ruff_format", "ruff_organize_imports" },
-				}
-				return project_formatters[project_name] or { "isort", "black" }
+			format_on_save = function(bufnr)
+				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+					return
+				end
+				return { timeout_ms = 3000, lsp_format = "fallback" }
 			end,
-			rust = { "rustfmt", lsp_format = "fallback" },
-			html = { "prettierd" },
-			javascript = { "prettierd" },
-			javascriptreact = { "prettierd" },
-			markdown = { "prettierd" },
-			typescript = { "prettierd" },
-			typescriptreact = { "prettierd" },
-			vue = { "prettierd" },
-			toml = { "pyproject_fmt" },
-			["*"] = { "trim_whitespace" },
-		},
 
-		format_on_save = function(bufnr)
-			if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-				return
-			end
-			return { timeout_ms = 3000, lsp_format = "fallback" }
-		end,
+			log_level = vim.log.levels.ERROR,
+			notify_on_error = true,
+			notify_no_formatters = true,
+		}
+	end,
 
-		log_level = vim.log.levels.ERROR,
-		notify_on_error = true,
-		notify_no_formatters = true,
-	},
 	init = function()
 		vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
 	end,

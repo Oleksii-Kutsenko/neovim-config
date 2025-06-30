@@ -1,11 +1,70 @@
 return {
 	"nvim-telescope/telescope.nvim",
 	tag = "0.1.8",
-	dependencies = { "nvim-lua/plenary.nvim", "BurntSushi/ripgrep" },
+	opts = { extensions_list = { "fzf" } },
+	dependencies = {
+		"nvim-lua/plenary.nvim",
+		"BurntSushi/ripgrep",
+		{
+			"nvim-telescope/telescope-fzf-native.nvim",
+			build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5 && cmake --build build --config Release",
+		},
+	},
 	config = function()
+		local telescope = require("telescope")
+		telescope.setup({
+			defaults = {
+				-------------------------------------------------
+				--  (A) PERFORMANCE TWEAKS
+				-------------------------------------------------
+				sorting_strategy = "ascending",
+				preview = {
+					filesize_limit = 2,
+					timeout = 200,
+				},
+				file_ignore_patterns = {
+					"node_modules",
+				},
+				-------------------------------------------------
+				--  (B) UI PREFERENCES
+				-------------------------------------------------
+				layout_strategy = "horizontal",
+				layout_config = {
+					anchor = "N",
+					height = 0.6,
+					prompt_position = "top",
+				},
+				pickers = {
+					live_grep = {
+						debounce = 200,
+					},
+				},
+			},
+			-------------------------------------------------
+			--  (C) EXTENSIONS
+			-------------------------------------------------
+			extensions = {
+				fzf = {
+					fuzzy = true,
+					override_generic_sorter = true,
+					override_file_sorter = true,
+					case_mode = "smart_case",
+				},
+			},
+		})
+
+		local function live_grep_threads(threads)
+			threads = threads or "4"
+			require("telescope.builtin").live_grep({
+				additional_args = function()
+					return { "--threads", threads }
+				end,
+			})
+		end
+
+		telescope.load_extension("fzf")
 		local wk = require("which-key")
 
-		-- Register telescope mappings with the new spec
 		wk.add({
 			{ "<leader>f", group = "Telescope" },
 			{
@@ -17,9 +76,7 @@ return {
 			},
 			{
 				"<leader>fg",
-				function()
-					require("telescope.builtin").live_grep()
-				end,
+				live_grep_threads,
 				desc = "Grep file contents in project",
 			},
 			{
@@ -76,20 +133,6 @@ return {
 					require("telescope.builtin").live_grep({ search_dirs = { node.absolute_path } })
 				end,
 				desc = "Grep file contents in current NvimTree node",
-			},
-			{
-				"<leader>zr",
-			},
-		})
-
-		require("telescope").setup({
-			defaults = {
-				layout_strategy = "horizontal",
-				layout_config = {
-					anchor = "N", -- Anchors the Telescope window to the South (bottom)
-					height = 0.6,
-					prompt_position = "top",
-				},
 			},
 		})
 	end,

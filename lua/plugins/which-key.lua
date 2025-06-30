@@ -194,5 +194,11 @@ return {
 			mode = "n",
 			desc = "Open current buffer in a new tab page",
 		},
+		{
+			"<leader>p",
+			'"_dP',
+			mode = "v",
+			desc = "Paste yank register",
+		},
 	},
 }
