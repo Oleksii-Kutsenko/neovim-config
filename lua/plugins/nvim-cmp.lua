@@ -27,8 +27,9 @@ return {
 			mapping = cmp.mapping.preset.insert({
 				["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
 				["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
-				["<C-b>"] = cmp.mapping.scroll_docs(-4), -- scroll backward
-				["<C-f>"] = cmp.mapping.scroll_docs(4), -- scroll forward
+        ["<C-u>"] = cmp.mapping.scroll_docs(-4),  -- scroll backward
+        ["<C-d>"] = cmp.mapping.scroll_docs(4),  -- scroll forward
+        ["<C-e>"] = cmp.mapping.abort(),
 				["<C-Space>"] = cmp.mapping.complete({}), -- show completion suggestions
 				["<CR>"] = cmp.mapping.confirm({
 					behavior = cmp.ConfirmBehavior.Replace,

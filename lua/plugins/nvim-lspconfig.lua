@@ -10,16 +10,50 @@ return {
 	},
 	config = function()
 		local util = require("lspconfig.util")
+
 		require("mason").setup()
+    require("mason-tool-installer").setup({
+			ensure_installed = {
+				"vue_ls",
+				"pyright",
+				"eslint",
+			},
+		})
 
-		local lsp_attach = function(client, bufnr)
-			print("Client attached:", client.name, "Buffer:", bufnr)
-		end
+    local on_attach = function(client, bufnr)
+      local wk = require("which-key")
+      wk.register({
+        g = {
+          name = "LSP",
+          g  = { "<cmd>lua vim.lsp.buf.hover()<CR>",            "Show hover information" },
+          d  = { "<cmd>lua vim.lsp.buf.definition()<CR>",       "Go to definition" },
+          D  = { "<cmd>lua vim.lsp.buf.declaration()<CR>",      "Go to declaration" },
+          i  = { "<cmd>lua vim.lsp.buf.implementation()<CR>",   "Go to implementation" },
+          t  = { "<cmd>lua vim.lsp.buf.type_definition()<CR>",  "Go to type definition" },
+          r  = { "<cmd>lua vim.lsp.buf.references()<CR>",       "Find references" },
+          s  = { "<cmd>lua vim.lsp.buf.signature_help()<CR>",   "Show signature help" },
+          f  = { "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", "Format code" },
+          a  = { "<cmd>lua vim.lsp.buf.code_action()<CR>",      "Show code actions" },
+          l  = { "<cmd>lua vim.diagnostic.open_float()<CR>",    "Show diagnostics" },
+          p  = { "<cmd>lua vim.diagnostic.goto_prev()<CR>",     "Prev diagnostic" },
+          n  = { "<cmd>lua vim.diagnostic.goto_next()<CR>",     "Next diagnostic" },
+          tr = { "<cmd>lua vim.lsp.buf.document_symbol()<CR>",  "List document symbols" },
+        },
+        r = {
+          name = "Refactor",
+          r = { "<cmd>lua vim.lsp.buf.rename()<CR>", "Rename symbol" },
+        },
+        ["<C-Space>"] = { "<cmd>lua vim.lsp.buf.completion()<CR>", "Trigger completion", mode = "i" },
+      }, {
+        prefix = "<leader>",
+        buffer = bufnr,
+        mode   = { "n", "v", "i" },
+      })
+    end
 
-		local servers = {
+    local servers = {
 			vue_ls = {
 				filetypes = { "vue", "javascript", "html" },
-				on_attach = lsp_attach,
 				init_options = {
 					vue = {
 						hybridMode = false,
@@ -32,7 +66,6 @@ return {
 				init_options = {
 					djlsp = {},
 				},
-				on_attach = lsp_attach,
 			},
 			pyright = require("lsp.pyright"),
 			eslint = {
@@ -48,58 +81,26 @@ return {
 			},
 		}
 
-		require("mason-tool-installer").setup({
-			ensure_installed = {
-				"vue_ls",
-				"pyright",
-				"eslint",
-			},
-		})
+    local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		local mason_lspconfig = require("mason-lspconfig")
-		mason_lspconfig.setup({
-			ensure_installed = {
-				"vue_ls",
-				"pyright",
-				"eslint",
-			},
-			handlers = {
-				function(server_name)
-					local opts = servers[server_name] or {}
-					opts.capabilities = require("cmp_nvim_lsp").default_capabilities()
+    local mlsp       = require("mason-lspconfig")
+    local available  = mlsp.get_available_servers()
 
-					require("lspconfig")[server_name].setup(opts)
-				end,
-			},
-		})
+    local avail_set  = {}
+    for _, name in ipairs(available) do
+      avail_set[name] = true
+    end
 
-		local wk = require("which-key")
-
-		wk.add({
-			{ "<leader>g", group = "LSP" },
-			{ "<leader>gg", "<cmd>lua vim.lsp.buf.hover()<CR>", desc = "Show hover information" },
-			{ "<leader>gd", "<cmd>lua vim.lsp.buf.definition()<CR>", desc = "Go to definition" },
-			{ "<leader>gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", desc = "Go to declaration" },
-			{ "<leader>gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", desc = "Go to implementation" },
-			{ "<leader>gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>", desc = "Go to type definition" },
-			{ "<leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", desc = "Find references" },
-			{ "<leader>gs", "<cmd>lua vim.lsp.buf.signature_help()<CR>", desc = "Show signature help" },
-			{
-				"<leader>gf",
-				"<cmd>lua vim.lsp.buf.format({async = true})<CR>",
-				desc = "Format code",
-				mode = { "n", "v" },
-			},
-			{ "<leader>ga", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "Show code actions" },
-			{ "<leader>gl", "<cmd>lua vim.diagnostic.open_float()<CR>", desc = "Show diagnostics in floating window" },
-			{ "<leader>gp", "<cmd>lua vim.diagnostic.goto_prev()<CR>", desc = "Go to previous diagnostic" },
-			{ "<leader>gn", "<cmd>lua vim.diagnostic.goto_next()<CR>", desc = "Go to next diagnostic" },
-			{ "<leader>tr", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", desc = "List document symbols" },
-
-			{ "<leader>r", group = "Refactor" },
-			{ "<leader>rr", "<cmd>lua vim.lsp.buf.rename()<CR>", desc = "Rename symbol" },
-
-			{ "<C-Space>", "<cmd>lua vim.lsp.buf.completion()<CR>", desc = "Trigger completion", mode = "i" },
-		})
+    mlsp.setup({
+      ensure_installed = to_install,
+      handlers = {
+        function(server_name)
+          local opts = vim.tbl_deep_extend("force", {}, servers[server_name] or {})
+          opts.on_attach    = opts.on_attach or on_attach
+          opts.capabilities = capabilities
+          require("lspconfig")[server_name].setup(opts)
+        end,
+      },
+    })
 	end,
 }
