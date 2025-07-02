@@ -94,6 +94,7 @@ return {
 				typescriptreact = { "prettierd" },
 				vue = { "prettierd" },
 				toml = { "pyproject_fmt" },
+				sql = { "sql_formatter" },
 				["*"] = { "trim_whitespace" },
 			},
 

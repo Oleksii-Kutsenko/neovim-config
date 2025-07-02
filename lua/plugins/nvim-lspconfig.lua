@@ -3,8 +3,8 @@ return {
 	event = "VeryLazy",
 	dependencies = {
 		"williamboman/mason.nvim",
-		"williamboman/mason-lspconfig.nvim",
-		{ "WhoIsSethDaniel/mason-tool-installer.nvim" }, -- Auto-installer for linters/formatters
+		{"williamboman/mason-lspconfig.nvim", }, 
+    { "WhoIsSethDaniel/mason-tool-installer.nvim", }, -- Auto-installer for linters/formatters
 		"hrsh7th/cmp-nvim-lsp",
 		{ "j-hui/fidget.nvim", opts = {} }, -- LSP progress indicator
 	},

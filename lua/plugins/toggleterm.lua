@@ -10,6 +10,9 @@ function set_terminal_keymaps()
 	vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
 end
 
+local in_wsl = vim.fn.has("wsl") == 1 or vim.env.WSL_DISTRO_NAME ~= nil
+local default_shell = in_wsl and "/bin/bash -l" or "pwsh.exe"
+
 return {
 	"akinsho/toggleterm.nvim",
 	version = "*",
@@ -33,7 +36,7 @@ return {
 			persist_size = true,
 			direction = "horizontal", -- Default direction: horizontal, vertical, float
 			close_on_exit = true, -- Close terminal when process exits
-			shell = "pwsh.exe",
+			shell = default_shell,
 			on_open = function()
 				set_terminal_keymaps()
 			end,
