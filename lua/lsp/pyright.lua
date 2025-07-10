@@ -43,43 +43,27 @@ local function set_python_path(path)
 	end
 end
 
-local function setup_pyright(opts)
-	local capabilities = vim.lsp.protocol.make_client_capabilities()
-	capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-
-	capabilities.textDocument = capabilities.textDocument or {}
-	capabilities.textDocument.publishDiagnostics = capabilities.textDocument.publishDiagnostics or {}
-	capabilities.textDocument.publishDiagnostics.tagSupport = {
-		valueSet = { 2 },
-	}
-
-	local pyright_opts = { -- Pyright-specific options
-		cmd = { "pyright-langserver", "--stdio" },
-		filetypes = { "python" },
-		root_dir = function(fname)
-			return util.root_pattern(unpack(root_files))(fname)
-		end,
-		single_file_support = true,
-		settings = {
-			python = {
-				analysis = {
-					autoSearchPaths = true,
-					useLibraryCodeForTypes = true,
-					diagnosticMode = "off",
-					typeCheckingMode = "off",
-				},
+local pyright_config = {
+	cmd = { "pyright-langserver", "--stdio" },
+	filetypes = { "python" },
+	root_dir = function(fname)
+		return util.root_pattern(unpack(root_files))(fname)
+	end,
+	single_file_support = true,
+	settings = {
+		python = {
+			analysis = {
+				autoSearchPaths = true,
+				useLibraryCodeForTypes = true,
+				diagnosticMode = "off",
+				typeCheckingMode = "off",
 			},
 		},
-		capabilities = capabilities, -- Add capabilities here
-	}
-
-	pyright_opts = vim.tbl_deep_extend("force", pyright_opts, opts or {})
-
-	require("lspconfig").pyright.setup(pyright_opts)
-end
+	},
+}
 
 return {
-	setup = setup_pyright,
+	config = pyright_config,
 	commands = {
 		PyrightOrganizeImports = {
 			organize_imports,
@@ -99,4 +83,34 @@ https://github.com/microsoft/pyright
 `pyright`, a static type checker and language server for python
 ]],
 	},
+	on_attach = function(client, bufnr)
+    local wk = require("which-key")
+		wk.register({
+			g = {
+				name = "LSP",
+				g = { "<cmd>lua vim.lsp.buf.hover()<CR>", "Show hover information" },
+				d = { "<cmd>lua vim.lsp.buf.definition()<CR>", "Go to definition" },
+				D = { "<cmd>lua vim.lsp.buf.declaration()<CR>", "Go to declaration" },
+				i = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Go to implementation" },
+				t = { "<cmd>lua vim.lsp.buf.type_definition()<CR>", "Go to type definition" },
+				r = { "<cmd>lua vim.lsp.buf.references()<CR>", "Find references" },
+				s = { "<cmd>lua vim.lsp.buf.signature_help()<CR>", "Show signature help" },
+				f = { "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", "Format code" },
+				a = { "<cmd>lua vim.lsp.buf.code_action()<CR>", "Show code actions" },
+				l = { "<cmd>lua vim.diagnostic.open_float()<CR>", "Show diagnostics" },
+				p = { "<cmd>lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic" },
+				n = { "<cmd>lua vim.diagnostic.goto_next()<CR>", "Next diagnostic" },
+				tr = { "<cmd>lua vim.lsp.buf.document_symbol()<CR>", "List document symbols" },
+			},
+			r = {
+				name = "Refactor",
+				r = { "<cmd>lua vim.lsp.buf.rename()<CR>", "Rename symbol" },
+			},
+			["<C-Space>"] = { "<cmd>lua vim.lsp.buf.completion()<CR>", "Trigger completion", mode = "i" },
+		}, {
+			prefix = "<leader>",
+			buffer = bufnr,
+			mode = { "n", "v", "i" },
+		})
+	end,
 }
