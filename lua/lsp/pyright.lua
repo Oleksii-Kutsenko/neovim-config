@@ -83,34 +83,32 @@ https://github.com/microsoft/pyright
 `pyright`, a static type checker and language server for python
 ]],
 	},
-	on_attach = function(client, bufnr)
+on_attach = function(client, bufnr)
     local wk = require("which-key")
-		wk.register({
-			g = {
-				name = "LSP",
-				g = { "<cmd>lua vim.lsp.buf.hover()<CR>", "Show hover information" },
-				d = { "<cmd>lua vim.lsp.buf.definition()<CR>", "Go to definition" },
-				D = { "<cmd>lua vim.lsp.buf.declaration()<CR>", "Go to declaration" },
-				i = { "<cmd>lua vim.lsp.buf.implementation()<CR>", "Go to implementation" },
-				t = { "<cmd>lua vim.lsp.buf.type_definition()<CR>", "Go to type definition" },
-				r = { "<cmd>lua vim.lsp.buf.references()<CR>", "Find references" },
-				s = { "<cmd>lua vim.lsp.buf.signature_help()<CR>", "Show signature help" },
-				f = { "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", "Format code" },
-				a = { "<cmd>lua vim.lsp.buf.code_action()<CR>", "Show code actions" },
-				l = { "<cmd>lua vim.diagnostic.open_float()<CR>", "Show diagnostics" },
-				p = { "<cmd>lua vim.diagnostic.goto_prev()<CR>", "Prev diagnostic" },
-				n = { "<cmd>lua vim.diagnostic.goto_next()<CR>", "Next diagnostic" },
-				tr = { "<cmd>lua vim.lsp.buf.document_symbol()<CR>", "List document symbols" },
-			},
-			r = {
-				name = "Refactor",
-				r = { "<cmd>lua vim.lsp.buf.rename()<CR>", "Rename symbol" },
-			},
-			["<C-Space>"] = { "<cmd>lua vim.lsp.buf.completion()<CR>", "Trigger completion", mode = "i" },
-		}, {
-			prefix = "<leader>",
-			buffer = bufnr,
-			mode = { "n", "v", "i" },
-		})
-	end,
+    wk.add({
+        -- LSP group and mappings (for modes n, v, i)
+        {
+            mode = { "n", "v", "i" },
+            { "<leader>g", group = "LSP", buffer = bufnr },
+            { "<leader>gg", "<cmd>lua vim.lsp.buf.hover()<CR>", desc = "Show hover information", buffer = bufnr },
+            { "<leader>gd", "<cmd>lua vim.lsp.buf.definition()<CR>", desc = "Go to definition", buffer = bufnr },
+            { "<leader>gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", desc = "Go to declaration", buffer = bufnr },
+            { "<leader>gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", desc = "Go to implementation", buffer = bufnr },
+            { "<leader>gt", "<cmd>lua vim.lsp.buf.type_definition()<CR>", desc = "Go to type definition", buffer = bufnr },
+            { "<leader>gr", "<cmd>lua vim.lsp.buf.references()<CR>", desc = "Find references", buffer = bufnr },
+            { "<leader>gs", "<cmd>lua vim.lsp.buf.signature_help()<CR>", desc = "Show signature help", buffer = bufnr },
+            { "<leader>gf", "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", desc = "Format code", buffer = bufnr },
+            { "<leader>ga", "<cmd>lua vim.lsp.buf.code_action()<CR>", desc = "Show code actions", buffer = bufnr },
+            { "<leader>gl", "<cmd>lua vim.diagnostic.open_float()<CR>", desc = "Show diagnostics", buffer = bufnr },
+            { "<leader>gp", "<cmd>lua vim.diagnostic.goto_prev()<CR>", desc = "Prev diagnostic", buffer = bufnr },
+            { "<leader>gn", "<cmd>lua vim.diagnostic.goto_next()<CR>", desc = "Next diagnostic", buffer = bufnr },
+            { "<leader>gtr", "<cmd>lua vim.lsp.buf.document_symbol()<CR>", desc = "List document symbols", buffer = bufnr },
+            -- Refactor group and mappings
+            { "<leader>r", group = "Refactor", buffer = bufnr },
+            { "<leader>rr", "<cmd>lua vim.lsp.buf.rename()<CR>", desc = "Rename symbol", buffer = bufnr },
+        },
+        -- Insert-mode only mapping for completion (with leader prefix as per your config)
+        { "<leader><C-Space>", "<cmd>lua vim.lsp.buf.completion()<CR>", desc = "Trigger completion", mode = "i", buffer = bufnr },
+    })
+end,
 }

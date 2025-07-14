@@ -21,14 +21,6 @@ return {
 		})
 
 		local servers = {
-			vue_ls = {
-				filetypes = { "vue", "javascript", "html" },
-				init_options = {
-					vue = {
-						hybridMode = false,
-					},
-				},
-			},
 			djlsp = {
 				cmd = { "djlsp" },
 				filetypes = { "html", "htmldjango" },
@@ -53,7 +45,7 @@ return {
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 		require("mason-lspconfig").setup({
-			ensure_installed = vim.tbl_keys(servers),
+			ensure_installed = {"pyright", "eslint"},
 		})
 
 		for server_name, server_config in pairs(servers) do
