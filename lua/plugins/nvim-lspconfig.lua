@@ -44,10 +44,6 @@ return {
 
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-		require("mason-lspconfig").setup({
-			ensure_installed = {"pyright", "eslint"},
-		})
-
 		for server_name, server_config in pairs(servers) do
 			local opts = vim.tbl_deep_extend("force", {}, server_config)
 			opts.capabilities = vim.tbl_deep_extend("force", opts.capabilities or {}, capabilities)
