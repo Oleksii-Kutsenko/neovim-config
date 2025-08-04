@@ -77,14 +77,7 @@ return {
 			formatters_by_ft = {
 				htmldjango = { "djlint" },
 				lua = { "stylua" },
-				python = function()
-					local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-					local project_formatters = {
-						["dilema"] = { "isort", "black" },
-						["ai-service"] = { "ruff_format", "ruff_organize_imports" },
-					}
-					return project_formatters[project_name] or { "isort", "black" }
-				end,
+				python = { "ruff_organize_imports", "ruff_format" },
 				rust = { "rustfmt", lsp_format = "fallback" },
 				html = { "prettierd" },
 				javascript = { "prettierd" },
@@ -102,7 +95,7 @@ return {
 				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 					return
 				end
-				return { timeout_ms = 3000, lsp_format = "fallback" }
+				return { timeout_ms = 2000, lsp_format = "fallback" }
 			end,
 
 			log_level = vim.log.levels.ERROR,
