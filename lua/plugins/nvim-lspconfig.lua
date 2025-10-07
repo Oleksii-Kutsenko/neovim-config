@@ -49,7 +49,6 @@ return {
 			})
 		end
 
-		local lspconfig = require("lspconfig")
 		local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 		local servers = {
@@ -108,7 +107,8 @@ return {
 				on_attach = on_attach,
 				capabilities = capabilities,
 			}, server_config)
-			lspconfig[server_name].setup(final_config)
+			vim.lsp.config(server_name, final_config)
+			vim.lsp.enable({ name = server_name })
 		end
 	end,
 }
