@@ -74,7 +74,6 @@ return {
 					pylsp = {
 						plugins = {
 							ruff = { enabled = true, format = {} },
-							-- pylint = { enabled = true, args = { "--recursive=y" } },
 							mypy = { enabled = true, live_mode = true },
 							pyflakes = { enabled = false },
 							mccabe = { enabled = false },
@@ -92,10 +91,22 @@ return {
 					packageManager = "yarn",
 				},
 				on_attach = function(client, bufnr)
-					vim.api.nvim_create_autocmd("BufWritePre", {
-						buffer = bufnr,
-						command = "EslintFixAll",
-					})
+					local bufopts = { noremap = true, silent = true, buffer = bufnr }
+					vim.keymap.set("n", "<leader>ef", vim.lsp.buf.code_action, bufopts)
+
+					if client.server_capabilities.codeActionProvider then
+						vim.api.nvim_create_autocmd("BufWritePre", {
+							buffer = bufnr,
+							callback = function()
+								vim.lsp.buf.code_action({
+									apply = true,
+									context = {
+										only = { "source.fixAll.eslint" },
+									},
+								}, function(result) end)
+							end,
+						})
+					end
 				end,
 			},
 		}
@@ -108,7 +119,7 @@ return {
 				capabilities = capabilities,
 			}, server_config)
 			vim.lsp.config(server_name, final_config)
-			vim.lsp.enable({ name = server_name })
+			vim.lsp.enable(server_name)
 		end
 	end,
 }
