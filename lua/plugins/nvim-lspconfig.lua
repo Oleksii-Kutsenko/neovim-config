@@ -59,33 +59,7 @@ return {
 					djlsp = {},
 				},
 			},
-			pylsp = {
-				cmd = { "pylsp" },
-				filetypes = { "python" },
-				root_markers = {
-					"pyproject.toml",
-					"setup.py",
-					"setup.cfg",
-					"requirements.txt",
-					"Pipfile",
-					".git",
-				},
-				settings = {
-					pylsp = {
-						plugins = {
-							ruff = { enabled = true, format = {} },
-							mypy = { enabled = true, live_mode = true },
-							pyflakes = { enabled = false },
-							mccabe = { enabled = false },
-							pycodestyle = { enabled = false },
-							rope_autoimport = {
-								enabled = true,
-								{ completions = { enabled = true } },
-							},
-						},
-					},
-				},
-			},
+			pyright = require("lsp.pyright"),
 			eslint = {
 				settings = {
 					packageManager = "yarn",
