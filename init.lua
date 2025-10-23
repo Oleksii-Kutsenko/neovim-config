@@ -29,14 +29,17 @@ vim.g.mapleader = " "
 -- Lazy.nvim setup
 require("lazy").setup({
 	spec = {
-		-- Import your plugins
-		{ import = "plugins" },
+		{ import = "plugins.init" },
 	},
 	install = {},
 	checker = { enabled = true },
 })
 
+-- require("config.commands")
+-- require("config.ui")
+-- require("core.options")
+-- require("lsp.python")
+require("core.options")
 require("config.commands")
 require("config.ui")
-require("core.options")
 require("lsp.python")

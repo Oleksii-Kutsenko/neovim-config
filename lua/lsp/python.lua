@@ -25,5 +25,11 @@ if vim.fn.has("win32") == 1 then
 end
 
 vim.g.python3_host_prog = python_host_prog
-
 print("Python3 host program set to: " .. vim.g.python3_host_prog)
+
+vim.lsp.config("ty", {
+	cmd = { "ty", "server" },
+	filetypes = { "python" },
+	root_markers = { "ty.toml", "pyproject.toml", ".git" },
+})
+vim.lsp.enable({ "ty" })

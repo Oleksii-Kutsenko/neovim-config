@@ -1,12 +1,9 @@
 return {
 	"folke/which-key.nvim",
 	event = "VeryLazy",
-	opts = {
-		-- your configuration comes here
-		-- or leave it empty to use the default settings
-		-- refer to the configuration section below
-	},
+	opts = {},
 	keys = {
+		-- General keymaps
 		{
 			"<leader>?",
 			function()
@@ -14,7 +11,6 @@ return {
 			end,
 			desc = "Buffer Local Keymaps (which-key)",
 		},
-		-- General keymaps
 		{
 			"<Space>ww",
 			":w<CR>",
@@ -42,6 +38,19 @@ return {
 			end,
 			desc = "Yank file path",
 		},
+		{
+			"J",
+			":m .+1<CR>==",
+			mode = "n",
+			desc = "Move line down",
+		},
+		{
+			"K",
+			":m .-2<CR>==",
+			mode = "n",
+			desc = "Move line up",
+		},
+		-- Folds (Keep as-is, they are not leader-mapped)
 		{
 			"zf#j",
 			desc = "Create fold from cursor down # lines",
@@ -100,6 +109,7 @@ return {
 		},
 
 		-- Splits
+		{ "<leader>s", group = "Window Splits" },
 		{
 			"<leader>sv",
 			"<C-w>v",
@@ -149,19 +159,6 @@ return {
 			desc = "Make split windows width smaller",
 		},
 
-		{
-			"J",
-			":m .+1<CR>==",
-			mode = "n",
-			desc = "Move line down",
-		},
-		{
-			"K",
-			":m .-2<CR>==",
-			mode = "n",
-			desc = "Move line up",
-		},
-
 		-- Tab management keymaps
 		{ "<leader>t", group = "Tab page" },
 		{
@@ -194,11 +191,20 @@ return {
 			mode = "n",
 			desc = "Open current buffer in a new tab page",
 		},
+
+		-- LSP Keymaps
+		{ "<leader>l", group = "LSP" },
+		{ "gr", vim.lsp.buf.references, mode = "n", desc = "LSP: References" },
+		{ "gd", vim.lsp.buf.definition, mode = "n", desc = "LSP: Definition" },
+		{ "<Space>rn", vim.lsp.buf.rename, mode = "n", desc = "LSP: Rename" },
+		{ "K", vim.lsp.buf.hover, mode = "n", desc = "LSP: Hover Documentation" },
 		{
-			"<leader>p",
-			'"_dP',
-			mode = "v",
-			desc = "Paste yank register",
+			"<Space>f",
+			function()
+				require("conform").format({ async = true, lsp_fallback = true })
+			end,
+			mode = "n",
+			desc = "LSP: Format (Conform)",
 		},
 	},
 }
