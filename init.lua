@@ -35,11 +35,8 @@ require("lazy").setup({
 	checker = { enabled = true },
 })
 
--- require("config.commands")
--- require("config.ui")
--- require("core.options")
--- require("lsp.python")
 require("core.options")
 require("config.commands")
 require("config.ui")
 require("lsp.python")
+require("lsp.javascript")
