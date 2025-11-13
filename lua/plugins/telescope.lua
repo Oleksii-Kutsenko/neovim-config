@@ -38,6 +38,9 @@ return {
 					live_grep = {
 						debounce = 200,
 					},
+					find_files = {
+						hidden = true,
+					},
 				},
 			},
 			-------------------------------------------------
