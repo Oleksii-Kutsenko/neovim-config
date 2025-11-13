@@ -12,6 +12,8 @@ return {
 	},
 	config = function()
 		local telescope = require("telescope")
+		local telescopeConfig = require("telescope.config")
+
 		telescope.setup({
 			defaults = {
 				-------------------------------------------------
@@ -53,6 +55,9 @@ return {
 					override_file_sorter = true,
 					case_mode = "smart_case",
 				},
+			},
+			pickers = {
+				find_files = { hidden = true },
 			},
 		})
 
