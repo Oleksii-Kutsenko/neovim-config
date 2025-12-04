@@ -3,6 +3,7 @@ return {
 	require("plugins.blink"),
 	require("plugins.catpuccin"),
 	require("plugins.conform"),
+    require("plugins.direnv"),
 	require("plugins.hop"),
 	require("plugins.mason"),
 	require("plugins.nvim-autopairs"),
