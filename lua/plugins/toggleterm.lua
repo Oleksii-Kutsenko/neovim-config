@@ -10,9 +10,24 @@ function set_terminal_keymaps()
 	vim.keymap.set("t", "<C-w>", [[<C-\><C-n><C-w>]], opts)
 end
 
-local in_wsl = vim.fn.has("wsl") == 1 or vim.env.WSL_DISTRO_NAME ~= nil
-local in_linux = vim.fn.has("linux") == 1
-local default_shell = (in_wsl or in_linux) and "/bin/bash -l" or "pwsh.exe"
+local is_wsl = vim.fn.has("wsl") == 1 or vim.env.WSL_DISTRO_NAME ~= nil
+local is_mac = vim.fn.has("mac") == 1
+local is_win = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+local is_linux = vim.fn.has("linux") == 1
+
+local default_shell
+
+if is_wsl then
+	default_shell = vim.env.SHELL or "/bin/bash"
+elseif is_mac then
+	default_shell = vim.env.SHELL or "/bin/zsh"
+elseif is_linux then
+	default_shell = vim.env.SHELL or "/bin/bash"
+elseif is_win then
+	default_shell = "pwsh.exe"
+else
+	default_shell = vim.env.SHELL or "/bin/sh"
+end
 
 return {
 	"akinsho/toggleterm.nvim",
