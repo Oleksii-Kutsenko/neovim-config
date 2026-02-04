@@ -11,7 +11,8 @@ function set_terminal_keymaps()
 end
 
 local in_wsl = vim.fn.has("wsl") == 1 or vim.env.WSL_DISTRO_NAME ~= nil
-local default_shell = in_wsl and "/bin/bash -l" or "pwsh.exe"
+local in_linux = vim.fn.has("linux") == 1
+local default_shell = (in_wsl or in_linux) and "/bin/bash -l" or "pwsh.exe"
 
 return {
 	"akinsho/toggleterm.nvim",

@@ -88,6 +88,8 @@ return {
 				vue = { "prettierd" },
 				toml = { "pyproject_fmt" },
 				sql = { "sql_formatter" },
+                json = { "prettier" },
+                jsonc = { "prettier" },
 				["*"] = { "trim_whitespace" },
 			},
 
