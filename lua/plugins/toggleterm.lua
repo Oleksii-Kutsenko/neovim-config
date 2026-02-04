@@ -18,15 +18,15 @@ local is_linux = vim.fn.has("linux") == 1
 local default_shell
 
 if is_wsl then
-  default_shell = vim.env.SHELL or "/bin/bash"
+	default_shell = vim.env.SHELL or "/bin/bash"
 elseif is_mac then
-  default_shell = vim.env.SHELL or "/bin/zsh"
+	default_shell = vim.env.SHELL or "/bin/zsh"
 elseif is_linux then
-  default_shell = vim.env.SHELL or "/bin/bash"
+	default_shell = vim.env.SHELL or "/bin/bash"
 elseif is_win then
-  default_shell = "pwsh.exe"
+	default_shell = "pwsh.exe"
 else
-  default_shell = vim.env.SHELL or "/bin/sh"
+	default_shell = vim.env.SHELL or "/bin/sh"
 end
 
 return {
